@@ -1,0 +1,300 @@
+DROP table Vendor cascade constraints;
+DROP table Customer cascade constraints;
+DROP table Region cascade constraints;
+DROP table Store cascade constraints;
+DROP table Country cascade constraints;
+DROP table Product cascade constraints;
+DROP Table Address cascade constraints;
+DROP Table Category cascade constraints; 
+DROP sequence Store_seq;
+DROP sequence Region_seq;
+DROP sequence Vendor_seq;
+DROP sequence Customer_seq;
+DROP sequence Country_seq;
+DROP sequence Address_seq;
+DROP sequence Category_seq;
+DROP sequence Product_seq;
+DROP VIEW Germany_Customers;
+DROP VIEW Texas;
+DROP VIEW USA;
+
+CREATE table Vendor
+    (VENDORID number(2) primary key, 
+         VENDOR_NAME varchar(20),
+         STREET_ADDRESS varchar(50),
+         CITY varchar(20),
+         STATE varchar(2),
+         ZIP_CODE number(5),
+         PHONE varchar(15),
+         EMAIL varchar(50),
+         REC_CREATE_DATE varchar(10),
+         REC_UPDATE_DATE varchar(10));
+    CREATE sequence Vendor_seq start with 1;
+    INSERT into Vendor values (Vendor_seq.nextval, 'Pacific Gear', '12 Fox Creek', 'Dallas', 'TX', 76001, '707-342-5576', 'pgear@page.com', NULL, NULL);
+    INSERT into Vendor values (Vendor_seq.nextval, 'Mountain King', '604 Market Street', 'Los Angeles', 'CA', 98102, '632-633-5500', 'mahsa@kingnet.com', NULL, NULL);
+    INSERT into Vendor values (Vendor_seq.nextval, 'Outdoor Adventures', '12 Street E', 'Chicago', 'IL', 52543, '505-644-4321', 'moberry@att.com', NULL, NULL);
+    INSERT into Vendor values (Vendor_seq.nextval, 'Wilderness Limited', '7002 West Delmar', 'Saint Louis', 'MO', 65411, '314-717-2321', 'gebest@tcloud.com', NULL, NULL);
+    CREATE or replace trigger Vendor_trg1
+    before insert on Vendor
+        for each row
+        begin
+            if :new.VENDORID is null then
+                select vendor_seq.nextval into :new.VENDORID from dual;
+           end if;
+        end;
+/
+    CREATE or replace trigger Vendor_trg2
+        before insert on Vendor
+        for each row
+        begin
+            if :new.REC_CREATE_DATE is null then
+                select vendor_seq.nextval into :new.REC_CREATE_DATE from dual;
+           end if;
+        end;
+/
+    CREATE or replace trigger Vendor_trg3
+    before insert on Vendor
+        for each row
+        begin
+            if :new.REC_UPDATE_DATE is null then
+                select vendor_seq.nextval into :new.REC_UPDATE_DATE from dual;
+           end if;
+        end;
+/
+    CREATE OR REPLACE VIEW Texas AS
+    SELECT STATE
+    FROM Vendor
+    WHERE STATE = 'TX';
+    
+CREATE table Customer
+    (CUSTOMERID number(2) primary key,
+         CUSTOMER_NAME varchar(10),
+         PHONE varchar(15),
+         EMAIL varchar(40),
+         REC_CREATE_DATE varchar(10),
+         REC_UPDATE_DATE varchar(10));
+    CREATE sequence Customer_seq start with 1;
+    INSERT into Customer values (Customer_seq.nextval, 'Tina', '622-091-9932', 'tina234@gmail.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Tony', '601-234-0911', 'tony2001@att.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Pam', '411-001-2145', 'moblig@icloud.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Elly', '623-628-0032', 'macsmenace@charter.net', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Nora', '721-900-8745', 'norajo@me.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Miles', '891-258-0319', 'abarmi@charter.net', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Neil', '529-353-5403', 'disselman@gmail.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Maggie', '636-401-7401', 'madoor@majority.com', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Ryan', '211-454-6202', 'rayanp@mini.net', NULL, NULL);
+    INSERT into Customer values (Customer_seq.nextval, 'Dan', '231-511-5499', 'Zimmerd@gmail.com', NULL, NULL);
+ 
+    CREATE or replace trigger Customer_trg1
+        before insert on Customer
+        for each row
+        begin
+            if :new.CUSTOMERID is null then
+                select customer_seq.nextval into :new.CUSTOMERID from dual;
+           end if;
+        end;
+/
+   CREATE or replace trigger Customer_trg2
+        before insert on Customer
+        for each row
+        begin
+            if :new.REC_CREATE_DATE is null then
+                select customer_seq.nextval into :new.REC_CREATE_DATE from dual;
+           end if;
+        end;
+/
+    CREATE or replace trigger Customer_trg3
+    before insert on Customer
+        for each row
+        begin
+            if :new.REC_UPDATE_DATE is null then
+                select customer_seq.nextval into :new.REC_UPDATE_DATE from dual;
+           end if;
+        end;
+/
+         
+CREATE table Country
+    (COUNTRYID number(2) primary key,
+        COUNTRY_CODE varchar(3),
+        COUNTRY_NAME varchar(20));
+    CREATE sequence Country_seq start with 1;
+    INSERT into Country values (country_seq.nextval, 'GER', 'Germany');
+    INSERT into Country values (country_seq.nextval, 'USA', 'United States');
+    CREATE or replace trigger Country_trg1
+        before insert on Country
+        for each row
+        begin
+            if :new.COUNTRYID is null then
+                select country_seq.nextval into :new.COUNTRYID from dual;
+           end if;
+        end;
+/
+CREATE OR REPLACE VIEW USA AS
+    SELECT COUNTRY_NAME
+    FROM Country
+    WHERE COUNTRY_NAME = 'United States';
+    
+CREATE table Region
+    (REGIONID number(2) primary key,
+        REGION_NAME varchar(25),
+        COUNTRYID number(2));
+    CREATE sequence Region_seq start with 1;
+    INSERT into Region values (region_seq.nextval, 'West', 2);
+    INSERT into Region values (region_seq.nextval, 'North West', 2);
+    INSERT into Region values (region_seq.nextval, 'Mid West', 2);
+    INSERT into Region values (region_seq.nextval, 'South West', 2);
+    INSERT into Region values (region_seq.nextval, 'South East', 2);
+    INSERT into Region values (region_seq.nextval, 'Mid Atlantic', 2);
+    INSERT into Region values (region_seq.nextval, 'North East', 2);
+    INSERT into Region values (region_seq.nextval, 'Lower Saxony', 1);
+    INSERT into Region values (region_seq.nextval, 'Brandenburg', 1);
+    INSERT into Region values (region_seq.nextval, 'Bavaria', 1);
+    INSERT into Region values (region_seq.nextval, 'Baden', 1);
+    INSERT into Region values (region_seq.nextval, 'Rheinland', 1);
+
+    CREATE or replace trigger Region_trg1
+        before insert on Region
+        for each row
+        begin
+            if :new.REGIONID is null then
+                select region_seq.nextval into :new.REGIONID from dual;
+           end if;
+        end;
+/
+    
+CREATE table Store
+    (STOREID number(2) primary key,
+        STORE_NAME varchar(40),
+        ZIP_CODE varchar(10),
+        REGIONID number(2));
+    CREATE sequence Store_seq start with 1;
+    INSERT into Store values (store_seq.nextval, 'Camping Life', '60600', 3);
+    INSERT into Store values (store_seq.nextval, 'Outdoors', '60605', 3);
+    INSERT into Store values (store_seq.nextval, 'Fishing & Plus', '35400', 5);
+    INSERT into Store values (store_seq.nextval, 'Alpen Bilder', '62345-00', 11);
+    INSERT into Store values (store_seq.nextval, 'River Bend', '46307', 5);
+    INSERT into Store values (store_seq.nextval, 'Rheinknie', '62345-RL', 12);
+    INSERT into Store values (store_seq.nextval, 'Alton Bluff', '64211', 3);
+    INSERT into Store values (store_seq.nextval, 'Yosemite Pics', '98168', 2);
+    INSERT into Store values (store_seq.nextval, 'Flagstaff nets', '85225', 4);
+    INSERT into Store values (store_seq.nextval, 'Campingbedarf', '31410-LB', 10);
+    CREATE or replace trigger Store_trg1
+        before insert on Store
+        for each row
+        begin
+            if :new.STOREID is null then
+                select store_seq.nextval into :new.STOREID from dual;
+           end if;
+        end;
+/
+CREATE table Address
+    (ADDRESSID number(2) primary key,
+        ADDRESS_TYPE varchar(10),
+        STREET_ADDRESS varchar(40),
+        CITY varchar(25),
+        STATE varchar(2),
+        POSTAL_CODE varchar(10),
+        COUNTRY varchar(10),
+        CUSTOMERID number(2));
+    CREATE sequence Address_seq start with 1;
+    INSERT into Address values (Address_seq.nextval, 'Home', '45020 Aviation Drive', 'Sterling', 'VA', '20166', 'US', 1);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '719 Peach Street', 'Atlanta', 'VA', '20166', 'US', 1);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '5698 Elmonte Drive', 'Atlanta', 'VA', '20166', 'US', 1);
+    INSERT into Address values (Address_seq.nextval, 'Home', '3235 Mi Casa Court', 'Birmingham', 'AL', '35203', 'US', 2);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '3235 Mi Casa Court', 'Birmingham', 'AL', '35203', 'US', 2);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '3235 Mi Casa Court', 'Birmingham', 'AL', '35203', 'US', 2);
+    INSERT into Address values (Address_seq.nextval, 'Home', '5698 Sunshine Drive', 'Chicago', 'IL', '60610', 'US', 3);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '12 State Street', 'Chicago', 'IL', '61610', 'US', 3);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '5698 Sunshine Drive', 'Chicago', 'IL', '60610', 'US', 3);
+    INSERT into Address values (Address_seq.nextval,'Home', '2530 Willow Court', 'Clearwater', 'FL', '33755', 'US', 4);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '2530 Willow Court', 'Clearwater', 'FL', '33755', 'US', 4);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '2530 Willow Court', 'Clearwater', 'FL', '33755', 'US', 4);
+    INSERT into Address values (Address_seq.nextval, 'Home', '970 Pheasant Circle', 'Branch', 'MN', '55056', 'US', 5);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '970 Pheasant Circle', 'Branch', 'MN', '55056', 'US', 5);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '970 Pheasant Circle', 'Branch', 'MN', '55056', 'US', 5);
+    INSERT into Address values (Address_seq.nextval, 'Home', '9471 Shell Dr.', 'Bremerton', 'WA', '98312', 'US', 6);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '48537 Partridge Dr.', 'Bremerton', 'WA', '98312', 'US', 6);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '8452 Dewing Avenue', 'Bremerton', 'WA', '98312', 'US', 6);
+    INSERT into Address values (Address_seq.nextval, 'Home', '6404 Del Mar Ave', 'Burien', 'WA', '98168', 'US', 7);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '22 Geary', 'Burien', 'WA', '98168', 'US', 7);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '2518 Cashew Street', 'Lynnwood', 'WA', '98036', 'US', 7);
+    INSERT into Address values (Address_seq.nextval, 'Home', '7656 Ramsey Circle', 'Chandler', 'AZ', '85225', 'US', 8);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '7656 Ramsey Circle', 'Chandler', 'AZ', '85225', 'US', 8);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '4584 Hamilton Ave', 'Chandler', 'AZ', '85225', 'US', 8);
+    INSERT into Address values (Address_seq.nextval, 'Home', '8871 Likins strasse', 'Frankfurt', 'HS', '10917-X9', 'Germany', 9);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '52 Larchenweg', 'Niu-Isneburg', 'HS', '62345-00', 'Germany', 9);
+    INSERT into Address values (Address_seq.nextval, 'Shipping', '8871 Likins strasse', 'Frankfurt', 'HS', '10917-X9', 'Germany', 9);
+    INSERT into Address values (Address_seq.nextval, 'Home', '1044 Mariendorf', 'Berlin', 'BR', '45202-K2', 'Germany', 10);
+    INSERT into Address values (Address_seq.nextval, 'Billing', '15834 Rangsdorf', 'Gross Machnow', 'BR', '45202-M6', 'Germany', 10);
+    INSERT into Address values (Address_seq.nextval,'Shipping', '1044 Mariendorf', 'Berlin', 'BR', '45202-K2', 'Germany', 10);
+    CREATE or replace trigger Address_trg1
+        before insert on Address
+        for each row
+        begin
+            if :new.ADDRESSID is null then
+                select Address_seq.nextval into :new.ADDRESSID from dual;
+           end if;
+        end;
+/
+    CREATE OR REPLACE VIEW Germany_Customers AS
+    SELECT COUNTRY
+    FROM Address
+    WHERE COUNTRY = 'Germany';
+
+CREATE table Category
+    (CATEGORYID number(2) primary key,
+        CATEGORY_NAME varchar(20));
+    CREATE sequence Category_seq start with 1;
+    INSERT into Category values (Category_seq.nextval, 'Camping');
+    INSERT into Category values (Category_seq.nextval, 'Footwear');
+    INSERT into Category values (Category_seq.nextval, 'Climbing');
+    INSERT into Category values (Category_seq.nextval, 'Electronics');
+    INSERT into Category values (Category_seq.nextval, 'Cycling');
+    CREATE or replace trigger Category_trg1
+        before insert on Category
+        for each row
+        begin
+            if :new.CATEGORYID is null then
+                select Category_seq.nextval into :new.CATEGORYID from dual;
+           end if;
+        end;
+/
+        
+CREATE table Product
+    (PRODUCTID number(2) primary key,
+        PRODUCT_NAME varchar(50),
+        CATEGORYID number(2));
+    CREATE sequence Product_seq start with 1;
+    INSERT into Product values (Product_seq.nextval, 'Zzz Bag', 1);
+    INSERT into Product values (Product_seq.nextval, 'Easy Boot', 2);
+    INSERT into Product values (Product_seq.nextval, 'Cosy Sock', 2);
+    INSERT into Product values (Product_seq.nextval, 'Dura Boot', 2);
+    INSERT into Product values (Product_seq.nextval, 'Tiny Tent', 1);
+    INSERT into Product values (Product_seq.nextval, 'Biggy Tent', 1);
+    INSERT into Product values (Product_seq.nextval, 'Hi-Tec GPS', 4);
+    INSERT into Product values (Product_seq.nextval, 'Power Pedals', 5);
+    INSERT into Product values (Product_seq.nextval, 'Trusty Rope', 3);
+    INSERT into Product values (Product_seq.nextval,'Comfy Harness', 3);
+    INSERT into Product values (Product_seq.nextval, 'Sunny Charger', 4);
+    INSERT into Product values (Product_seq.nextval, 'Safe-T Helmet', 5);
+    INSERT into Product values (Product_seq.nextval, 'Mmm Stove', 1);
+    INSERT into Product values (Product_seq.nextval, 'Reflect-o Jacket', 5);
+    INSERT into Product values (Product_seq.nextval, 'Strongster Carribeaner', 3);
+    INSERT into Product values (Product_seq.nextval, 'Sleepy Pad', 1);
+    INSERT into Product values (Product_seq.nextval, 'Bucky Knife', 1);
+    INSERT into Product values (Product_seq.nextval, 'Treado Tire', 5);
+    INSERT into Product values (Product_seq.nextval, 'Slicky Tire', 5);
+    INSERT into Product values (Product_seq.nextval, 'Electra Compass', 4);
+    INSERT into Product values (Product_seq.nextval, 'Mega Camera', 4);
+    INSERT into Product values (Product_seq.nextval, 'Simple Sandal', 2);
+    INSERT into Product values (Product_seq.nextval, 'Action Sandal', 2);
+    INSERT into Product values (Product_seq.nextval, 'Luxo Tent', 1);
+    CREATE or replace trigger Product_trg1
+        before insert on Product
+        for each row
+        begin
+            if :new.PRODUCTID is null then
+                select Product_seq.nextval into :new.PRODUCTID from dual;
+           end if;
+        end;
+/
